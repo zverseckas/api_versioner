@@ -59,8 +59,6 @@ defmodule ApiVersioner.SetVersion do
   @doc false
   def call(conn, opts) do
     header_value = get_header(conn, opts.header)
-    IO.inspect header_value
-    IO.inspect MIME.extensions(header_value)
     case MIME.extensions(header_value) do
       [version | _tail] ->
         set_version(conn, version)
