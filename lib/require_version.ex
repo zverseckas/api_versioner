@@ -5,11 +5,10 @@ defmodule ApiVersioner.RequireVersion do
     %{error_handler: opts[:error_handler] || ApiVersioner.ErrorHandler}
   end
 
-  def call(%Plug.Conn{assigns: %{version: version}} = conn, opts) do
-    if version, do: conn, else: handle_error(conn, opts)
-  end
+  def call(%Plug.Conn{assigns: %{version: _version}} = conn, _opts), do: conn
+  def call(conn, opt), do: handle_error(conn, opt.error_handler)
 
-  defp handle_error(conn, opts) do
-    apply(opts.error_handler, :call, [halt(conn)])
+  defp handle_error(conn, error_handler) do
+    apply(error_handler, :call, [halt(conn)])
   end
 end

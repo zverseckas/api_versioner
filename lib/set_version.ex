@@ -16,7 +16,7 @@ defmodule ApiVersioner.SetVersion do
     case Map.fetch(opts.accepts, heade_value) do
       {:ok, [version]} ->
         set_version(conn, version)
-      
+
       _error ->
         set_default(conn, opts)
     end
