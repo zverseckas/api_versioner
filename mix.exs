@@ -13,8 +13,7 @@ defmodule ApiVersioner.Mixfile do
 
   def application do
     [
-      extra_applications: [:logger],
-      mod: {ApiVersioner, []}
+      extra_applications: [:logger]
     ]
   end
 
