@@ -5,15 +5,15 @@ defmodule ApiVersioner.SetVersion do
 
   def init(opts) do
     %{
-      accepts: opts[:accepts] || [],            # Accepted versions
+      accepts: opts[:accepts] || %{},           # Accepted versions
       default: opts[:default],                  # Default version
       header: opts[:header] || @default_header  # HTTP header to check
      }
   end
 
   def call(conn, opts) do
-    [heade_value] = get_req_header(conn, opts.header)
-    case Map.fetch(opts.accepts, heade_value) do
+    header_value = get_header(conn, opts.header)
+    case Map.fetch(opts.accepts, header_value) do
       {:ok, [version]} ->
         set_version(conn, version)
 
@@ -33,5 +33,12 @@ defmodule ApiVersioner.SetVersion do
 
   defp set_version(conn, version) do
     assign(conn, :version, version)
+  end
+
+  defp get_header(conn, header) do
+    case get_req_header(conn, header) do
+      [header_value] -> header_value
+      _error -> nil
+    end
   end
 end
