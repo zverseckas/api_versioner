@@ -53,7 +53,7 @@ defmodule SetVersionTest do
 
    test "sets version when not provided but default exists", opts do
     with_mock MIME, has_type?: fn(:test1) -> true end,
-                    extensions: fn(_type) -> [] end] do
+                    extensions: fn(_type) -> [] end do
       conn =
        conn(:get, "/", "")
        |> SetVersion.call(opts[:with_default])
