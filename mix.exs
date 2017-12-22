@@ -22,7 +22,8 @@ defmodule ApiVersioner.Mixfile do
     [
       {:cowboy, "~> 1.1.1"},
       {:plug, "~> 1.4.3"},
-      {:ex_doc, "~> 0.16", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.16", only: :dev, runtime: false},
+      {:mock, "~> 0.3.0", only: :test}
     ]
   end
 end

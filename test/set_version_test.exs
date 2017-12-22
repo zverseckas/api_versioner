@@ -2,6 +2,8 @@ defmodule SetVersionTest do
   use ExUnit.Case, async: true
   use Plug.Test
 
+  import Mock
+
   alias ApiVersioner.SetVersion
 
   doctest SetVersion
@@ -20,16 +22,10 @@ defmodule SetVersionTest do
   	{:ok,
   		[
 		  	no_default: SetVersion.init(
-		  		accepts: %{
-		  			"Test1" => [:test1],
-		  			"Test2" => [:test2]
-		  		}
+		  		accepts: ~w(test1 test2)a
 		  	),
 		  	with_default: SetVersion.init(
-		  		accepts: %{
-	  				"Test1" => [:test1],
-	  				"Test2" => [:test2]
-		  		},
+		  		accepts: ~w(test1 test2)a,
 		  		default: :test1
 	  		)
 	  	]
@@ -37,12 +33,14 @@ defmodule SetVersionTest do
   end
 
   test "sets version when a valid one provided", opts do
-  	conn =
-  		conn(:get, "/", "")
-	  	|> put_req_header("accept", "Test1")
-	  	|> SetVersion.call(opts[:no_default])
+    with_mock MIME, [extensions: fn("Test1") -> ~w(test1)a end] do
+    	conn =
+    		conn(:get, "/", "")
+  	  	|> put_req_header("accept", "Test1")
+  	  	|> SetVersion.call(opts[:no_default])
 
-	  assert conn.assigns.version === :test1
+  	  assert conn.assigns.version === :test1
+    end
   end
 
   test "does not set version when not provided", opts do
@@ -54,10 +52,14 @@ defmodule SetVersionTest do
   end
 
    test "sets version when not provided but default exists", opts do
-  	conn =
-  	 conn(:get, "/", "")
-  	 |> SetVersion.call(opts[:with_default])
+    with_mock MIME, [
+        has_type?: fn(:test1) -> true end,
+        extensions: fn(_type) -> [] end] do
+    	conn =
+    	 conn(:get, "/", "")
+    	 |> SetVersion.call(opts[:with_default])
 
-  	assert conn.assigns.version === :test1
+    	assert conn.assigns.version === :test1
+    end
   end
 end
