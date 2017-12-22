@@ -35,7 +35,8 @@ defmodule SetVersionTest do
   test "sets version when a valid one provided", opts do
     with_mock MIME, extensions: fn ("Test1") -> [:test1] end do
       conn =
-        conn(:get, "/", "")
+        :get
+        |> conn("/", "")
         |> put_req_header("accept", "Test1")
         |> SetVersion.call(opts[:no_default])
 
@@ -45,8 +46,9 @@ defmodule SetVersionTest do
 
   test "does not set version when not provided", opts do
     conn =
-     conn(:get, "/", "")
-     |> SetVersion.call(opts[:no_default])
+      :get
+      |> conn("/", "")
+      |> SetVersion.call(opts[:no_default])
 
     refute conn.assigns[:version]
   end
@@ -55,8 +57,9 @@ defmodule SetVersionTest do
     with_mock MIME, has_type?: fn(:test1) -> true end,
                     extensions: fn(_type) -> [] end do
       conn =
-       conn(:get, "/", "")
-       |> SetVersion.call(opts[:with_default])
+        :get
+        |> conn("/", "")
+        |> SetVersion.call(opts[:with_default])
 
       assert conn.assigns.version === :test1
     end
