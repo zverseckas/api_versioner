@@ -28,6 +28,6 @@ defmodule ApiVersioner.RequireVersion do
   def call(conn, opt), do: handle_error(conn, opt.error_handler)
 
   defp handle_error(conn, error_handler) do
-    apply(error_handler, :call, conn)
+    apply(error_handler, :call, [conn])
   end
 end
