@@ -8,19 +8,10 @@ defmodule SetVersionTest do
 
   doctest SetVersion
 
-  test "creates a valid options map" do
-    opts = SetVersion.init([])
-    assert Map.keys(opts) === [:accepts, :default, :header]
-  end
-
-  test "default header is Accept" do
-    %{header: header} = SetVersion.init([])
-    assert header === "accept"
-  end
-
   setup _opts do
     {:ok,
       [
+        opts: SetVersion.init([]),
         no_default: SetVersion.init(
           accepts: ~w(test1 test2)a
         ),
@@ -32,28 +23,38 @@ defmodule SetVersionTest do
     }
   end
 
-  test_with_mock "sets version when a valid one provided", opts,
-    MIME, [], [extensions: fn ("Test1") -> [:test1] end] do
+  test "creates a valid options map", %{opts: opts} do
+    assert Map.keys(opts) === [:accepts, :default, :header]
+  end
+
+  test "default header is Accept", %{opts: %{header: header}} do
+    assert header === "accept"
+  end
+
+  test_with_mock "sets version when a valid given", %{no_default: opts},
+    MIME, [], [
+      extensions: fn ("Test1") -> [:test1] end
+    ] do
 
     conn =
       :get
       |> conn("/", "")
       |> put_req_header("accept", "Test1")
-      |> SetVersion.call(opts[:no_default])
+      |> SetVersion.call(opts)
 
     assert conn.assigns.version === :test1
   end
 
-  test "does not set version when not provided", opts do
+  test "does not set version when invalid", %{no_default: opts} do
     conn =
       :get
       |> conn("/", "")
-      |> SetVersion.call(opts[:no_default])
+      |> SetVersion.call(opts)
 
     refute conn.assigns[:version]
   end
 
-   test_with_mock "sets version when not provided but default exists", opts,
+  test_with_mock "sets default version", %{with_default: opts},
     MIME, [], [
       has_type?: fn(:test1) -> true end,
       extensions: fn(_type) -> [] end
@@ -62,7 +63,7 @@ defmodule SetVersionTest do
     conn =
       :get
       |> conn("/", "")
-      |> SetVersion.call(opts[:with_default])
+      |> SetVersion.call(opts)
 
     assert conn.assigns.version === :test1
   end

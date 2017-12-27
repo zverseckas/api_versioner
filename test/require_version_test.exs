@@ -9,35 +9,34 @@ defmodule RequireVersionTest do
 
   doctest RequireVersion
 
-  test "creates a valid options map" do
-    opts = RequireVersion.init([])
+  setup_with_mocks([{ErrorHandler, [], call: & &1}]) do
+    {:ok, [opts: RequireVersion.init([])]}
+  end
+
+  test "creates a valid options map", %{opts: opts} do
     assert Map.keys(opts) === [:error_handler]
   end
 
-  test "has a default error handler" do
-    opts = RequireVersion.init([])
+  test "has a default error handler", %{opts: opts} do
     assert opts.error_handler === ErrorHandler
   end
 
-  setup_with_mocks([{ErrorHandler, [], call: & &1}]) do
-    {:ok, []}
-  end
 
-  test "calls error handler when version is not set" do
+  test "calls error handler when version is not set", %{opts: opts} do
     conn =
       :get
       |> conn("/", "")
-      |> RequireVersion.call(RequireVersion.init([]))
+      |> RequireVersion.call(opts)
 
     assert called ErrorHandler.call(conn)
   end
 
-  test "passes conn when version is set" do
+  test "passes conn when version is set", %{opts: opts} do
     conn =
       :get
       |> conn("/", "")
       |> assign(:version, :v1)
-      |> RequireVersion.call(RequireVersion.init([]))
+      |> RequireVersion.call(opts)
 
     refute called ErrorHandler.call(conn)
   end
