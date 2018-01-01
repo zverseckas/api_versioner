@@ -7,7 +7,15 @@ defmodule ApiVersioner.Mixfile do
       version: "0.1.0",
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
-      deps: deps()
+      deps: deps(),
+      preferred_cli_env: [
+       "coveralls": :test,
+       "coveralls.detail": :test,
+       "coveralls.html": :test,
+       "coveralls.post": :test,
+       "coveralls.travis": :test
+      ],
+     test_coverage: [tool: ExCoveralls]
     ]
   end
 
@@ -24,7 +32,8 @@ defmodule ApiVersioner.Mixfile do
       {:plug, "~> 1.4.3"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
       {:mock, "~> 0.3.0", only: :test},
-      {:dogma, "~> 0.1", only: :dev}
+      {:dogma, "~> 0.1", only: :dev},
+      {:excoveralls, "~> 0.8", only: :test}
     ]
   end
 end
