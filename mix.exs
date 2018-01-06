@@ -36,4 +36,14 @@ defmodule ApiVersioner.Mixfile do
       {:excoveralls, "~> 0.8", only: :test}
     ]
   end
+
+  defp package do
+    [
+      maintainers: ["zverseckas"],
+      licenses: ["MIT"],
+      links: %{
+        GitHub: "https://github.com/zverseckas/api_versioner"
+      }
+    ]
+  end
 end
