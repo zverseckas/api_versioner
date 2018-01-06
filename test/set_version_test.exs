@@ -18,6 +18,9 @@ defmodule SetVersionTest do
         with_default: SetVersion.init(
           accepts: ~w(test1 test2)a,
           default: :test1
+        ),
+        with_custom_header: SetVersion.init(
+          header: "X-Version"
         )
       ]
     }
@@ -25,6 +28,10 @@ defmodule SetVersionTest do
 
   test "creates a valid options map", %{opts: opts} do
     assert Map.keys(opts) === [:accepts, :default, :header]
+  end
+
+  test "sets a given header", %{with_custom_header: %{header: header}} do
+    assert header === "X-Version"
   end
 
   test "default header is Accept", %{opts: %{header: header}} do
