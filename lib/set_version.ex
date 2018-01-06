@@ -18,7 +18,7 @@ defmodule ApiVersioner.SetVersion do
 
     and the API versioner's configuration is done the following way:
 
-      plug ApiVersioner.SetVerion, accepts: [:v1, :v2], header: "accept"
+      plug ApiVersioner.SetVersion, accepts: [:v1, :v2], header: "accept"
 
     then whenever the *Accept* header is either
     `Accept: "application/vnd.app.v1+json"` or
@@ -29,13 +29,13 @@ defmodule ApiVersioner.SetVersion do
     when used HTTP header is *Accept*:
 
       # Uses the 'Accept' header by default
-      plug ApiVersioner.SetVerion, accepts: [:v1, :v2]
+      plug ApiVersioner.SetVersion, accepts: [:v1, :v2]
 
     Also, as a fallback situation when no version can be determined the
     `default` option can come in handy:
 
       # When no version is found API version will be set to default :v1
-      plug ApiVersioner.SetVerion, accepts: [:v1, :v2], default: :v1
+      plug ApiVersioner.SetVersion, accepts: [:v1, :v2], default: :v1
 
     In some cases API version can be set by simply omitting all the options
     except for the `:default`. This way the version will just be set to the
