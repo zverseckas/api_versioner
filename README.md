@@ -45,7 +45,7 @@ defmodule MyApi.Router do
 end
 ```
 ## Tests & coverage
-Tests gen be ran by
+Tests can be ran by
 ```
 $~ mix test
 $~ mix coveralls
